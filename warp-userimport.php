@@ -37,6 +37,8 @@ class Warp_UserProfile
 		// Register actions and filters here
 		add_action('edit_user_profile', array('Warp_UserProfile', 'show_extra_fields'));
 		add_action('show_user_profile', array('Warp_UserProfile', 'show_extra_fields'));
+		add_action('profile_update', array('Warp_UserProfile', 'save_extra_fields'));
+		add_action('personal_options_update', array('Warp_UserProfile', 'save_extra_fields'));
 		register_activation_hook(__FILE__, array('Warp_UserProfile', 'register_version'));
 	}
 	
@@ -48,6 +50,7 @@ class Warp_UserProfile
 	
 	function show_extra_fields()
 	{
+		$user = $GLOBALS['profileuser'];
 		echo '<h3>' . __( 'Profile extras', 'warp_userprofile' ) . '</h3>';
 		?>
 		<table class="form-table">
@@ -57,7 +60,7 @@ class Warp_UserProfile
 						<?php _e( 'Public profile', 'warp_userprofile' ); ?>
 					</th>
 					<td>
-						<input type="checkbox" name="warp_up_public" value="<?php echo $warp_up_public; ?>" id="warp_up_public" />
+						<input type="checkbox" name="warp_up_public" value="1" id="warp_up_public" <?php if (get_usermeta($user->ID, 'warp_up_public') == 1) { echo 'checked="checked"'; } ?> />
 						<label for="warp_up_public"><?php _e( 'If checked, this profile will be shown in the public directory', 'warp_userprofile' ); ?></label>
 					</td>
 				</tr>
@@ -66,14 +69,21 @@ class Warp_UserProfile
 						<?php _e( 'Title', 'warp_userprofile' ); ?>
 					</th>
 					<td>
-						<input type="text" name="warp_up_title" value="<?php echo $warp_up_title; ?>" id="warp_up_title" /><br />
+						<input type="text" name="warp_up_title" value="<?php echo get_usermeta($user->ID, 'warp_up_title'); ?>" id="warp_up_title" /><br />
 						<?php _e( 'Your position at the company', 'warp_userprofile' ); ?>
 					</td>
 				</tr>
 			</tbody>
 		</table>
 		<?php
-	}	
+	}
+	
+	function save_extra_fields()
+	{
+		$user_id = (int) $_POST["user_id"];
+		update_usermeta($user_id, "warp_up_title", $_POST["warp_up_title"]);
+		update_usermeta($user_id, "warp_up_public", $_POST["warp_up_public"]);
+	}
 }
 
 Warp_UserProfile::init();
