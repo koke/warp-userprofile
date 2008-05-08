@@ -39,6 +39,10 @@ class Warp_UserProfile
 		add_action('show_user_profile', array('Warp_UserProfile', 'show_extra_fields'));
 		add_action('profile_update', array('Warp_UserProfile', 'save_extra_fields'));
 		add_action('personal_options_update', array('Warp_UserProfile', 'save_extra_fields'));
+		add_filter('query_vars', array('Warp_UserProfile', 'query_vars'));
+		add_filter('generate_rewrite_rules', array('Warp_UserProfile', 'register_rewrite_rules'));
+		add_action('template_redirect', array('Warp_UserProfile', 'show_profiles'));
+		add_action('admin_print_scripts', array('Warp_UserProfile', 'admin_js'));
 		register_activation_hook(__FILE__, array('Warp_UserProfile', 'register_version'));
 	}
 	
@@ -46,6 +50,48 @@ class Warp_UserProfile
 	{		
 		add_option('warp_userprofile_version', warp_userprofile_version);
 		update_option('warp_userprofile_version', warp_userprofile_version);
+	}
+	
+	function register_rewrite_rules($wp_rewrite)
+	{
+		$userprofile_rules = array(
+			// 'people/?' => 'wp-content/plugins/warp-userprofile/people.php'
+			'people/([^/]+)/?' => 'index.php?showprofiles=1&person=' . $wp_rewrite->preg_index(1),
+			'people/?' => 'index.php?showprofiles=1',
+			);
+		$wp_rewrite->rules = array_merge($userprofile_rules, $wp_rewrite->rules);
+	}
+	
+	function query_vars($vars)
+	{
+		$vars[] = "showprofiles";
+		$vars[] = "person";
+		return $vars;
+	}
+	
+	function admin_js()
+	{
+		wp_enqueue_script("editor");
+	}
+	
+	function show_profiles()
+	{
+		global $wp_rewrite, $wp_query;
+		
+		if (get_query_var("showprofiles")) {
+			if (get_query_var("person")) {
+				$user = get_userdatabylogin(get_query_var('person'));
+				if (get_usermeta($user->ID, 'warp_up_public') == 1) {
+					require 'person.php';
+				} else {
+					$wp_query->is_404 = true;
+					return;
+				}
+			} else {
+				require 'people.php';
+			}
+			exit;
+		}
 	}
 	
 	function show_extra_fields()
@@ -75,14 +121,27 @@ class Warp_UserProfile
 				</tr>
 			</tbody>
 		</table>
+		<div id="editorcontainer">
+			
+		</div>
+		<script type="text/javascript">
+		<!--
+		// edCanvas = document.getElementById('description');
+		tinyMCE.execCommand("mceAddControl", false, "description");
+		//-->
+		</script>
+		
 		<?php
 	}
 	
 	function save_extra_fields()
 	{
+		global $wpdb;
 		$user_id = (int) $_POST["user_id"];
 		update_usermeta($user_id, "warp_up_title", $_POST["warp_up_title"]);
 		update_usermeta($user_id, "warp_up_public", $_POST["warp_up_public"]);
+		update_usermeta( $user_id, 'description', $wpdb->escape($_POST["description"]) );
+		// var_dump($_POST);//die;
 	}
 }
 
