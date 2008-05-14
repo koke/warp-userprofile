@@ -2,7 +2,7 @@
 
 	<div id="content" class="narrowcolumn warp-span-6">
 		<div style='float: right' class="profileback">
-			<a href="<?php echo get_bloginfo('wpurl') . '/people/' ?>"><?php _e( 'See all', 'warp_userprofile' ); ?></a>			
+			<a href="<?php echo Warp_Userprofile::permalink() ?>"><?php _e( 'See all', 'warp_userprofile' ); ?></a>			
 			<?php 
 			global $userdata;
 			if (current_user_can('edit_users')): ?>

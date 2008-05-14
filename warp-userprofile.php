@@ -43,6 +43,7 @@ class Warp_UserProfile
 		add_filter('generate_rewrite_rules', array('Warp_UserProfile', 'register_rewrite_rules'));
 		add_action('template_redirect', array('Warp_UserProfile', 'show_profiles'));
 		add_action('admin_print_scripts', array('Warp_UserProfile', 'admin_js'));
+		add_action('admin_menu', array('Warp_UserProfile', 'add_option_pages'));
 		register_activation_hook(__FILE__, array('Warp_UserProfile', 'register_version'));
 	}
 	
@@ -50,16 +51,23 @@ class Warp_UserProfile
 	{		
 		add_option('warp_userprofile_version', warp_userprofile_version);
 		update_option('warp_userprofile_version', warp_userprofile_version);
+		add_option("warp_userprofile_page");
 	}
 	
 	function register_rewrite_rules($wp_rewrite)
 	{
+		$plink = Warp_UserProfile::get_plink();
 		$userprofile_rules = array(
 			// 'people/?' => 'wp-content/plugins/warp-userprofile/people.php'
-			'people/([^/]+)/?' => 'index.php?showprofiles=1&person=' . $wp_rewrite->preg_index(1),
-			'people/?' => 'index.php?showprofiles=1',
+			"$plink([^/]+)/?" => 'index.php?showprofiles=1&person=' . $wp_rewrite->preg_index(1),
+			"$plink?" => 'index.php?showprofiles=1',
 			);
 		$wp_rewrite->rules = array_merge($userprofile_rules, $wp_rewrite->rules);
+	}
+	
+	function add_option_pages()
+	{
+		add_options_page(__('Profiles', 'warp_userprofile'), __('Profiles', 'warp_userprofile'), 8, 'warp-userprofile', array('Warp_UserProfile', 'options_page'));
 	}
 	
 	function query_vars($vars)
@@ -92,6 +100,38 @@ class Warp_UserProfile
 			}
 			exit;
 		}
+	}
+	
+	function options_page()
+	{
+		global $wp_rewrite;
+		$wp_rewrite->flush_rules();
+		
+		$warp_userprofile_page = get_option("warp_userprofile_page");
+		echo "<div class='wrap'>";
+		echo "<h2>" . __( 'Profiles Options', 'warp_userprofile') . "</h2>";
+		?>
+		<form method="post" action="options.php">
+			<?php wp_nonce_field('update-options'); ?>
+			<h3><?php _e( 'General options', 'warp_lms'); ?></h3>
+			<table class="form-table">
+					<tr>
+						<th>
+							<?php _e( 'Profiles page', 'warp_lms'); ?>
+						</th>
+						<td>
+							<?php wp_dropdown_pages(array('name' => 'warp_userprofile_page', 'selected' => $warp_userprofile_page)); ?>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<input type="hidden" name="page_options" value="warp_userprofile_page" />
+			<input type="hidden" name="action" value="update" />
+
+			<p class="submit"><input type="submit" value="<?php _e( 'Update Options', 'warp_userprofile'); ?>"></p>
+		</form>
+		<?php
+		echo "</div>";
 	}
 	
 	function show_extra_fields()
@@ -142,6 +182,21 @@ class Warp_UserProfile
 		update_usermeta($user_id, "warp_up_public", $_POST["warp_up_public"]);
 		update_usermeta( $user_id, 'description', $wpdb->escape($_POST["description"]) );
 		// var_dump($_POST);//die;
+	}
+	
+	function get_plink()
+	{
+		$home = get_option('home');
+		$profile_page_id = get_option('warp_userprofile_page');
+		$plink = preg_replace("|^$home/?|","",get_permalink($profile_page_id));
+		
+		return $plink;
+	}
+	
+	function permalink()
+	{
+		$profile_page_id = get_option('warp_userprofile_page');
+		return get_permalink($profile_page_id);
 	}
 }
 

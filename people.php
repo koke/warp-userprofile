@@ -11,7 +11,7 @@
 			?>
 			<div class="profile" style='clear: left; margin-bottom: 10px'>
 				<div class="avatar" style='float: left; margin-right: 12px'><?php echo get_avatar($user->user_email, 48); ?></div>
-				<h3 style='line-height: 32px; font-size: 24px; margin: 0;'><a href="/people/<?php echo $user->user_login; ?>"><?php echo $user->display_name; ?></a></h3>
+				<h3 style='line-height: 32px; font-size: 24px; margin: 0;'><a href="<?php echo Warp_Userprofile::permalink() . $user->user_login; ?>"><?php echo $user->display_name; ?></a></h3>
 				<h4 style='line-height: 16px; font-size: 16px; margin: 0;'><?php echo get_usermeta($user->user_id, 'warp_up_title'); ?></h4>
 			</div>
 			<?php
