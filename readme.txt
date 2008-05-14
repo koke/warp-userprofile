@@ -25,6 +25,6 @@ This section describes how to install the plugin and get it working.
 
 Ask them at <jbernal@warp.es>
 
-=== Will it work on Wordpress < 2.5 ? ===
+= Will it work on Wordpress older versions? =
 
 I don't know, but probably. Try it, and drop me a line if it works at <jbernal@warp.es>
