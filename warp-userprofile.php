@@ -59,8 +59,8 @@ class Warp_UserProfile
 		$plink = Warp_UserProfile::get_plink();
 		$userprofile_rules = array(
 			// 'people/?' => 'wp-content/plugins/warp-userprofile/people.php'
-			"$plink([^/]+)/?" => 'index.php?showprofiles=1&person=' . $wp_rewrite->preg_index(1),
-			"$plink?" => 'index.php?showprofiles=1',
+			"$plink([^/]+)/?" => 'index.php?showprofiles=1&person=' . $wp_rewrite->preg_index(1) . '&page_id=' . get_option('warp_userprofile_page'),
+			"$plink?" => 'index.php?showprofiles=1' . '&page_id=' . get_option('warp_userprofile_page'),
 			);
 		$wp_rewrite->rules = array_merge($userprofile_rules, $wp_rewrite->rules);
 	}
@@ -74,6 +74,7 @@ class Warp_UserProfile
 	{
 		$vars[] = "showprofiles";
 		$vars[] = "person";
+		$vars[] = "page_id";
 		return $vars;
 	}
 	
