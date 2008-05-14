@@ -1,7 +1,7 @@
 <?php get_header(); ?>
 
 	<div id="content" class="narrowcolumn warp-span-6">
-	<h2><?php _e( 'Our Team', 'warp_userprofile'); ?></h2>
+	<h2><?php echo get_the_title(get_option('warp_userprofile_page')); ?></h2>
 	<?php
 		echo get_query_var('person');
 		$users = get_users_of_blog();

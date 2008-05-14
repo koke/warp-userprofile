@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: Warp User Profile extension
-Plugin URI: http://people.warp.es/~koke/wp-plugins/warp_userprofile
-Description: Imports user feeds from other blogs and let editors promote them to front page
+Plugin URI: http://people.warp.es/~koke/wp-plugins/warp-userprofile
+Description: Shows a directory of authors and their personal info
 Version: 0.1
 Author: Jorge Bernal
 Author URI: http://koke.amedias.org/
@@ -198,6 +198,15 @@ class Warp_UserProfile
 		$profile_page_id = get_option('warp_userprofile_page');
 		return get_permalink($profile_page_id);
 	}
+	
+	function title()
+	{
+		$profile_page_id = get_option('warp_userprofile_page');
+		$page = get_post($profile_page_id);
+		
+		return $page->post_title;
+	}
+	
 }
 
 Warp_UserProfile::init();
