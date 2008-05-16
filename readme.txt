@@ -3,7 +3,7 @@ Contributors: koke
 Tags: admin, user, profile
 Requires at least: 2.5
 Tested up to: 2.5.1
-Stable tag: 0.1
+Stable tag: 0.1.1
 
 Shows a directory of authors and their personal info
 
