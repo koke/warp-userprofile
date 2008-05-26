@@ -208,6 +208,17 @@ class Warp_UserProfile
 		return $page->post_title;
 	}
 	
+	function parse_email($email)
+	{
+		$out = "";
+		for ($i=0; $i < strlen($email); $i++) { 
+			$c = unpack("C", $email[$i]);
+			$out.= sprintf("&#x%02X;", $c[1]);
+		}
+		
+		return $out;
+	}
+	
 }
 
 Warp_UserProfile::init();

@@ -20,7 +20,7 @@
 			</div>
 			<dl class="contact_info">
 				<dt class="email"><?php _e( 'Email', 'warp_userprofile') ?></dt>
-				<dd class="email"><a href="mailto:<?php echo $user->user_email ?>"><?php echo $user->user_email ?></a></dd>
+				<dd class="email"><a href="mailto:<?php echo Warp_Userprofile::parse_email($user->user_email); ?>"><?php echo Warp_Userprofile::parse_email($user->user_email); ?></a></dd>
 				<?php if (!empty($user->user_url) && ($user->user_url != "http://")): ?>
 				<dt class="website"><?php _e( 'Website', 'warp_userprofile' ); ?></dt>
 				<dd class="website"><a href="<?php echo $user->user_url ?>"><?php echo $user->user_url ?></a></dd>
