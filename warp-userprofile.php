@@ -219,6 +219,31 @@ class Warp_UserProfile
 		return $out;
 	}
 	
+	function avatar_for($user)
+	{
+	 	if ( $image = glob(ABSPATH . 'wp-content/authors/' . $user->user_login . '-*.jpg') )
+		{
+			$image = current($image);
+			$site_url = trailingslashit(get_option('siteurl'));
+			return '<img src="'
+					. str_replace(ABSPATH, $site_url, $image)
+					. '"'
+				. ' alt="" class="avatar avatar-48" height="48" width="48"'
+				. ' />';
+		}
+		else
+		{
+		  return get_avatar($user->user_email, 48);
+		}
+	}
+	
+  function get_users_of_blog( $id = '' ) {
+  	global $wpdb, $blog_id;
+  	if ( empty($id) )
+  		$id = (int) $blog_id;
+  	$users = $wpdb->get_results( "SELECT user_id, user_login, display_name, user_email, meta_value FROM $wpdb->users, $wpdb->usermeta WHERE " . $wpdb->users . ".ID = " . $wpdb->usermeta . ".user_id AND meta_key = '" . $wpdb->prefix . "capabilities' ORDER BY {$wpdb->users}.display_name" );
+  	return $users;
+  }  
 }
 
 Warp_UserProfile::init();

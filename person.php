@@ -12,7 +12,7 @@
 			<?php endif; ?>
 		</div>
 		<div class="profile">
-			<div class="avatar"><?php echo get_avatar($user->user_email, 48); ?></div>
+			<div class="avatar"><?php echo Warp_Userprofile::avatar_for($user); ?></div>
 			<h2 class='name'><?php echo $user->display_name; ?></h2>
 			<h3 class='title'><?php echo get_usermeta($user->ID, 'warp_up_title'); ?></h3>
 			<div class="bio">
