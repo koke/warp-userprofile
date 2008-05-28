@@ -1,16 +1,22 @@
 <?php get_header(); ?>
 
+<?php 
+  $post = get_post(get_option('warp_userprofile_page'));
+  subbar($post); 
+?>
+
 	<div id="content" class="narrowcolumn warp-span-6">
-		<div style='float: right' class="profileback">
-			<a href="<?php echo Warp_Userprofile::permalink() ?>"><?php _e( 'See all', 'warp_userprofile' ); ?></a>			
-			<?php 
-			global $userdata;
-			if (current_user_can('edit_users')): ?>
-			<br /><a href="<?php echo get_bloginfo('wpurl') . '/wp-admin/user-edit.php?user_id=' . $user->ID ?>"><?php _e( 'Edit profile', 'warp_userprofile' ); ?></a>						
-			<?php elseif ($userdata->ID == $user->ID): ?>
-				<br /><a href="<?php echo get_bloginfo('wpurl') . '/wp-admin/profile.php' ?>"><?php _e( 'Edit profile', 'warp_userprofile' ); ?></a>						
-			<?php endif; ?>
-		</div>
+		<?php 
+		global $userdata;
+		if (current_user_can('edit_users')): ?>
+  		<div style='float: right' class="profileback">
+    		<a href="<?php echo get_bloginfo('wpurl') . '/wp-admin/user-edit.php?user_id=' . $user->ID ?>"><?php _e( 'Edit profile', 'warp_userprofile' ); ?></a>						
+  		</div>
+		<?php elseif ($userdata->ID == $user->ID): ?>
+  		<div style='float: right' class="profileback">
+    		<a href="<?php echo get_bloginfo('wpurl') . '/wp-admin/profile.php' ?>"><?php _e( 'Edit profile', 'warp_userprofile' ); ?></a>						
+  		</div>
+		<?php endif; ?>
 		<div class="profile">
 			<div class="avatar"><?php echo Warp_Userprofile::avatar_for($user); ?></div>
 			<h2 class='name'><?php echo $user->display_name; ?></h2>
@@ -41,6 +47,5 @@
 		</div>
 
 	</div>
-<?php get_sidebar(); ?>
 
 <?php get_footer(); ?>
